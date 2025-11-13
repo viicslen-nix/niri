@@ -55,7 +55,7 @@ in {
     spawn-at-startup = [
       {argv = ["${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1"];}
       {argv = ["${pkgs.gnome-keyring}/bin/gnome-keyring-daemon" "--start" "--components=secrets"];}
-      {sh = [passwordManager "--silent"];}
+      {sh = "${passwordManager} --silent";}
     ];
   };
 }
