@@ -50,6 +50,12 @@ in {
       ];
 
       default-column-width = {proportion = 0.95;};
+
+      preset-window-heights = [
+        {proportion = 0.4;}
+        {proportion = 0.5;}
+        {proportion = 0.6;}
+      ];
     };
 
     spawn-at-startup = [
