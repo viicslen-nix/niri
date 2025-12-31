@@ -4,8 +4,8 @@
   config,
   ...
 }: {
-  xdg.configFile."DankMaterialShell/stylix.json".source = with config.lib.stylix.colors.withHashtag;
-    lib.mkIf config.stylix.enable (
+  xdg.configFile."DankMaterialShell/stylix.json" = lib.mkIf ((builtins.hasAttr "stylix" config) && config.stylix.enable) {
+    source = with config.lib.stylix.colors.withHashtag;
       pkgs.writers.writeJSON "custom-theme.json" {
         "name" = "Stylix";
         "primary" = base0C;
@@ -25,8 +25,8 @@
         "error" = base08;
         "warning" = base0A;
         "info" = base0D;
-      }
-    );
+      };
+  };
 
   programs.dankMaterialShell = {
     enable = true;
