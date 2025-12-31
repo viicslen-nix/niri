@@ -1,6 +1,7 @@
 {
   osConfig,
   config,
+  pkgs,
   lib,
   ...
 }: let
@@ -90,7 +91,7 @@ in {
       "Mod+Q".action = close-window;
       "Mod+T".action = toggle-window-floating;
       "Mod+W".action = switch-preset-window-width;
-      "Mod+V".action = switch-preset-window-height;
+      "Mod+Shift+W".action = switch-preset-window-height;
 
       # Window maximization
       "Mod+F".action = maximize-column;
@@ -105,11 +106,11 @@ in {
       "Mod+J".action = focus-window-down;
 
       # Window movement
-      "Mod+Shift+H".action = send-to-column-left;
-      "Mod+Shift+L".action = send-to-column-right;
-      "Mod+Shift+K".action = send-to-window-up;
-      "Mod+Shift+J".action = send-to-window-down;
-      "Mod+Shift+Return".action = zoom-column;
+      # "Mod+Shift+H".action.send-to-column-left = [];
+      # "Mod+Shift+L".action.send-to-column-right = [];
+      # "Mod+Shift+K".action.send-to-window-up = [];
+      # "Mod+Shift+J".action.send-to-window-down = [];
+      # "Mod+Shift+Return".action.zoom-column = [];
 
       # Workspace switching (Arrow keys, layer 2; only up/down supported)
       "Mod+Down".action = focus-workspace-down;
@@ -128,8 +129,8 @@ in {
       "Mod+Alt+J".action = move-workspace-to-monitor-down;
 
       # Interactive column resizing
-      "Mod+BracketLeft".action = resize-column-width-left;
-      "Mod+BracketRight".action = resize-column-width-right;
+      # "Mod+BracketLeft".action.resize-column-width-left = [];
+      # "Mod+BracketRight".action.resize-column-width-right = [];
 
       # dynamic cast
       "Mod+Insert".action = set-dynamic-cast-window;
@@ -154,9 +155,9 @@ in {
       "XF86AudioNext".action = sh "playerctl next";
 
       # Volume Controls
-      "Mod+PageUp".action = sh "${pkgs.pipewire}/bin/wpctl set-volume -l '1.0' @DEFAULT_AUDIO_SINK@ 5%+";
-      "Mod+PageDown".action = sh "${pkgs.pipewire}/bin/wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-";
-      "Mod+M".action = sh "${pkgs.pipewire}/bin/wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle";
+      # "Mod+PageUp".action = sh "${pkgs.pipewire}/bin/wpctl set-volume -l '1.0' @DEFAULT_AUDIO_SINK@ 5%+";
+      # "Mod+PageDown".action = sh "${pkgs.pipewire}/bin/wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-";
+      # "Mod+M".action = sh "${pkgs.pipewire}/bin/wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle";
 
       # apps
       "Mod+S".action = spawn "ferdium";
