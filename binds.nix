@@ -145,7 +145,16 @@ in {
       "Mod+Shift+Tab".action = focus-window-up-or-column-left;
 
       # screenshots
-      "Mod+Shift+S".action.screenshot = [];
+      # "Mod+Shift+S".action.screenshot = [];
+      "Mod+Shift+S" = let
+        flameshot = pkgs.flameshot.override {enableWlrSupport = true;};
+      in {
+        action = sh "${getExe flameshot} gui";
+        hotkey-overlay = {
+          title = "Flameshot";
+          hidden = false;
+        };
+      };
       "Mod+Ctrl+S".action.screenshot-window = [];
       "Mod+Ctrl+Shift+S".action.screenshot-screen = [];
 
