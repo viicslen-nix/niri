@@ -150,10 +150,7 @@ in {
         flameshot = pkgs.flameshot.override {enableWlrSupport = true;};
       in {
         action = sh "${getExe flameshot} gui";
-        hotkey-overlay = {
-          title = "Flameshot";
-          hidden = false;
-        };
+        hotkey-overlay.title = "Flameshot";
       };
       "Mod+Ctrl+S".action.screenshot-window = [];
       "Mod+Ctrl+Shift+S".action.screenshot-screen = [];
