@@ -63,10 +63,7 @@ in {
     };
   };
 
-  imports = 
-    if cfg.enable or false
-    then [inputs.niri-flake.nixosModules.niri]
-    else [];
+  imports = optional (cfg.enable or false) inputs.niri-flake.nixosModules.niri;
 
   config = mkIf cfg.enable (mkMerge [
     {
