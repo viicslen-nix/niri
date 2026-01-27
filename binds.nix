@@ -149,7 +149,7 @@ in {
       "Mod+Shift+S" = let
         flameshot = pkgs.flameshot.override {enableWlrSupport = true;};
       in {
-        action = sh "${getExe flameshot} gui";
+        action = spawn "${getExe flameshot} gui";
         hotkey-overlay.title = "Flameshot";
       };
       "Mod+Ctrl+S".action.screenshot-window = [];
