@@ -97,53 +97,149 @@ If any application options are set to `null` (default), the module will automati
 
 ## Keybindings
 
-### Window Management
+This configuration uses a **unified keymap system** designed for muscle memory consistency across window managers (Hyprland/Niri) and editors (Neovim/Nixvim). See the **Unified Keymap Philosophy** section below for details.
 
-- `Mod+Q`: Close window
-- `Mod+T`: Toggle window floating
-- `Mod+W`: Switch preset window width
-- `Mod+F`: Maximize column
-- `Mod+Shift+F`: Fullscreen window
-- `Mod+Ctrl+F`: Toggle windowed fullscreen
-- `Mod+Alt+F`: Maximize window to edges
+### Modifier Key
+- **Primary Modifier**: `Mod` (SUPER/Windows key)
 
-### Focus Movement
+### Navigation Philosophy
+All navigation follows vim conventions:
+- **H** = Left
+- **J** = Down
+- **K** = Up
+- **L** = Right
 
-- `Mod+H/L`: Focus column left/right
-- `Mod+J/K`: Focus window up/down
-- `Mod+Arrow Keys`: Navigate workspaces and columns
-- `Mod+Tab/Shift+Tab`: Cycle through windows
+### Modifier Layers
+Consistent modifier stacking across the system:
+- **Base (Mod)**: Focus/navigate
+- **+ SHIFT**: Move monitor focus
+- **+ CTRL**: Workspace navigation
+- **+ SHIFT + ALT**: Cross-monitor workspace operations
 
-### Monitor Management
+### Core Keybinds
 
-- `Mod+Shift+Arrow Keys`: Focus different monitors
-- `Mod+Shift+Alt+Arrow Keys`: Move workspace between monitors
+**Window Management**
+| Keybind | Action |
+|---------|--------|
+| `Mod + Q` | Close window |
+| `Mod + T` | Toggle floating |
+| `Mod + F` | Maximize column |
+| `Mod + Shift + F` | Fullscreen window |
+| `Mod + Ctrl + F` | Toggle windowed fullscreen |
+| `Mod + Alt + F` | Maximize to edges |
+| `Mod + Ctrl + Space` | Toggle column tabbed display |
 
-### Workspace Management
+**Focus Movement (Vim keys)**
+| Keybind | Action |
+|---------|--------|
+| `Mod + H` | Focus column left |
+| `Mod + L` | Focus column right |
+| `Mod + J` | Focus window down |
+| `Mod + K` | Focus window up |
 
-- `Mod+1-0`: Switch to workspace 1-10
-- `Mod+Shift+1-0`: Move window to workspace 1-10
-- `Mod+Up/Down`: Navigate workspaces vertically
+**Interactive Menus (using wlr-which-key)**
+| Keybind | Menu | Actions |
+|---------|------|---------|
+| `Mod + W` | Window Focus | `h/j/k/l` to move focus |
+| `Mod + Shift + W` | Window Move | `h/j/k/l` to move window/column |
+| `Mod + Z` | Window Resize | `h/j/k/l` to resize (±40px) |
+| `Mod + A` | Application Launcher | See applications section |
 
-### Application Shortcuts
+**Workspace Navigation**
+| Keybind | Action |
+|---------|--------|
+| `Mod + 1-0` | Focus workspace 1-10 |
+| `Mod + Shift + 1-0` | Move column to workspace 1-10 |
+| `Mod + Ctrl + H` | Focus workspace down |
+| `Mod + Ctrl + L` | Focus workspace up |
+| `Mod + Up/Down` | Focus workspace up/down (arrows) |
 
-- `Mod+Return`: Open terminal (if configured)
-- `Mod+B`: Open browser (if configured)
-- `Mod+E`: Open file manager (if configured)
-- `Mod+S`: Open Ferdium
-- `Ctrl+Shift+Space`: Quick access password manager (if configured)
+**Monitor Management**
+| Keybind | Action |
+|---------|--------|
+| `Mod + Shift + H/L` | Focus monitor left/right |
+| `Mod + Shift + Left/Right` | Focus monitor left/right (arrows) |
+| `Mod + Shift + Alt + H/J/K/L` | Move workspace to monitor |
+| `Mod + Shift + Alt + Left/Right` | Move workspace to monitor (arrows) |
 
-### System Controls
+**Tab Navigation**
+| Keybind | Action |
+|---------|--------|
+| `Mod + Tab` | Focus window down or column right |
+| `Mod + Shift + Tab` | Focus window up or column left |
 
-- `Mod+O`: Show hotkey overlay
-- `Mod+Shift+S`: Take screenshot
-- `Mod+Ctrl+S`: Screenshot active window
-- `Mod+Ctrl+Shift+S`: Screenshot entire screen
+**Applications**
+| Keybind | Action |
+|---------|--------|
+| `Mod + Return` | Terminal (if configured) |
+| `Mod + B` | Browser (if configured) |
+| `Mod + E` | File Manager (if configured) |
+| `Mod + S` | Ferdium |
+| `Ctrl + Shift + Space` | Password Manager |
 
-### Media Controls
+**Application Menu (`Mod + A`)**
+| Key | Application |
+|-----|-------------|
+| `p` | PhpStorm |
+| `d` | DataGrip |
+| `w` | WebStorm |
+| `s` | Slack |
+| `l` | Discord |
+| `f` | Firefox |
+| `c` | VSCode |
+| `e` | File Manager |
+| `t` | Terminal |
 
-- `XF86AudioPlay`: Play/pause media
-- `XF86AudioPrev/Next`: Previous/next track
+**Screenshots**
+| Keybind | Action |
+|---------|--------|
+| `Mod + Shift + S` | Flameshot GUI |
+| `Mod + Ctrl + S` | Screenshot active window |
+| `Mod + Ctrl + Shift + S` | Screenshot entire screen |
+
+**Dynamic Cast (Screen Sharing)**
+| Keybind | Action |
+|---------|--------|
+| `Mod + Insert` | Set dynamic cast window |
+| `Mod + Shift + Insert` | Set dynamic cast monitor |
+| `Mod + Delete` | Clear dynamic cast target |
+
+**Media Controls**
+| Keybind | Action |
+|---------|--------|
+| `XF86AudioPlay` | Play/Pause |
+| `XF86AudioPrev/Next` | Previous/Next track |
+
+**System**
+| Keybind | Action |
+|---------|--------|
+| `Mod + O` | Show hotkey overlay (native) |
+
+### Unified Keymap Philosophy
+
+This configuration implements **cross-system keymap standardization** to reduce cognitive load and improve muscle memory:
+
+**Design Principles:**
+1. **Vim-style navigation everywhere**: H/J/K/L for all directional movement
+2. **Consistent modifier layers**: Same patterns across Hyprland and Niri
+3. **Interactive menus**: wlr-which-key menus for grouped actions (matching Hyprland)
+4. **Namespace-based launchers**: Application menu (`Mod+A`) mirrors editor leader patterns
+5. **Mnemonic consistency**: Same keys for same concepts across systems
+
+**Cross-System Consistency:**
+- **Close/Quit**: `Mod+Q` (WM), `<leader>q` (Neovim)
+- **Explorer/Files**: `Mod+E` (file manager), `<leader>e` (file tree)
+- **Focus Movement**: `Mod+H/J/K/L` (WM columns/windows), `Ctrl+H/J/K/L` (Neovim splits)
+- **Menu System**: Both WMs use wlr-which-key for interactive menus
+- **Modifier Layering**: Base→SHIFT→CTRL→SHIFT+ALT hierarchy is identical
+
+**Menu System Implementation:**
+- Uses wlr-which-key (same as Hyprland) for visual interactive menus
+- Bottom-right anchor position for consistency
+- YAML-based configuration for easy modification
+- Supports chording: press `Mod+W`, then `h/j/k/l` for actions
+
+See the Hyprland, Nixvim, and Neovim READMEs for their implementations of this unified system.
 
 ## Window Rules
 
