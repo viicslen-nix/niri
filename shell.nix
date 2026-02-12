@@ -28,11 +28,11 @@
       };
   };
 
-  programs.dankMaterialShell = {
+  programs.dank-material-shell = {
     enable = true;
-    niri = {
-      enableSpawn = true;
-      enableKeybinds = true;
-    };
+    # niri = {
+    #   enableSpawn = true;
+    #   enableKeybinds = true;
+    # };
   };
 }
