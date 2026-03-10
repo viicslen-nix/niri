@@ -13,14 +13,16 @@ in {
 
     # mkMenu: Create interactive menu using wlr-which-key (same as Hyprland)
     mkMenu = menu: let
-      configFile = builtins.toFile "config.yaml"
+      configFile =
+        pkgs.writeText "config.yaml"
         (lib.generators.toYAML {} {
           anchor = "bottom-right";
           inherit menu;
         });
-    in pkgs.writeShellScriptBin "niri-menu" ''
-      exec ${lib.getExe pkgs.wlr-which-key} ${configFile}
-    '';
+    in
+      pkgs.writeShellScriptBin "niri-menu" ''
+        exec ${lib.getExe pkgs.wlr-which-key} ${configFile}
+      '';
 
     # Determine which applications to use
     terminal =

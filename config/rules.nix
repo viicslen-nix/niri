@@ -33,6 +33,18 @@
         matches = [{namespace = "dms:blurwallpaper";}];
         place-within-backdrop = true;
       }
+      # {
+      #   matches = [
+      #     {
+      #       namespace = "^dms:.*";
+      #       at-startup = true;
+      #     }
+      #   ];
+      #   background-effect = {
+      #     xray = true;
+      #     blur = true;
+      #   };
+      # }
     ];
   };
 }
