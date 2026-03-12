@@ -138,6 +138,26 @@ in {
           desc = "Focus window down";
           cmd = "niri msg action focus-window-down";
         }
+        {
+          key = "1";
+          desc = "Column width 30%";
+          cmd = "niri msg action set-column-width 30%";
+        }
+        {
+          key = "2";
+          desc = "Column width 48%";
+          cmd = "niri msg action set-column-width 48%";
+        }
+        {
+          key = "3";
+          desc = "Column width 65%";
+          cmd = "niri msg action set-column-width 65%";
+        }
+        {
+          key = "4";
+          desc = "Column width 95%";
+          cmd = "niri msg action set-column-width 95%";
+        }
       ])}";
 
       # Window move menu (interactive - matches Hyprland)
