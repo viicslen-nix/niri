@@ -110,7 +110,7 @@ in {
       "Mod+J".action = focus-window-down;
 
       # Window focus menu
-      "Mod+W".action = sh "${lib.getExe (mkMenu [
+      "Mod+W".action = sh "${mkMenu [
         {
           key = "h";
           desc = "Focus column left";
@@ -151,10 +151,10 @@ in {
           desc = "Column width 95%";
           cmd = "niri msg action set-column-width 95%";
         }
-      ])}";
+      ]}";
 
       # Window move menu
-      "Mod+Shift+W".action = sh "${lib.getExe (mkMenu [
+      "Mod+Shift+W".action = sh "${mkMenu [
         {
           key = "h";
           desc = "Move column left";
@@ -175,10 +175,10 @@ in {
           desc = "Move window down";
           cmd = "niri msg action move-window-down";
         }
-      ])}";
+      ]}";
 
       # Window resize menu
-      "Mod+Z".action = sh "${lib.getExe (mkMenu [
+      "Mod+Z".action = sh "${mkMenu [
         {
           key = "h";
           desc = "Resize column left";
@@ -199,7 +199,7 @@ in {
           desc = "Resize window down";
           cmd = "niri msg action set-window-height +40";
         }
-      ])}";
+      ]}";
 
       # Workspace switching
       "Mod+Ctrl+H".action = focus-workspace-down;
@@ -248,7 +248,7 @@ in {
       # "Mod+M".action = sh "${pkgs.pipewire}/bin/wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle";
 
       # Application launcher menu
-      "Mod+A".action = sh "${lib.getExe (mkMenu [
+      "Mod+A".action = sh "${mkMenu [
         {
           key = "s";
           desc = "Ferdium";
@@ -294,6 +294,6 @@ in {
           desc = "Terminal";
           cmd = "${terminal}";
         }
-      ])}";
+      ]}";
     };
 }

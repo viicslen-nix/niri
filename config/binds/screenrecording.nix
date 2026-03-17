@@ -13,7 +13,7 @@ in {
   with config.lib.niri.actions; let
     sh = spawn "sh" "-c";
   in {
-    "Mod+Shift+R".action = sh "${lib.getExe (mkMenu [
+    "Mod+Shift+R".action = sh "${mkMenu [
       {
         key = "q";
         desc = "Stop recording";
@@ -39,6 +39,6 @@ in {
         desc = "Region";
         cmd = mkRecordCmd "-g \"$(${lib.getExe pkgs.slurp})\"";
       }
-    ])}";
+    ]}";
   };
 }

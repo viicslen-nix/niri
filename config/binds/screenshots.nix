@@ -19,9 +19,9 @@ in {
           inherit menu;
         });
     in
-      pkgs.writeShellScriptBin "niri-menu" ''
+      lib.getExe (pkgs.writeShellScriptBin "niri-menu" ''
         exec ${lib.getExe pkgs.wlr-which-key} ${configFile}
-      '';
+      '');
 
     flameshot = pkgs.flameshot.override {enableWlrSupport = true;};
     wlCopy = "${pkgs.wl-clipboard}/bin/wl-copy";
@@ -60,7 +60,7 @@ in {
     ];
   in {
     # Action first, then capture scope
-    "Mod+Shift+S".action = sh "${lib.getExe (mkMenu [
+    "Mod+Shift+S".action = sh "${mkMenu [
       {
         key = "s";
         desc = "Save & copy to clipboard";
@@ -94,7 +94,7 @@ in {
           })
           screenshotScopes;
       }
-    ])}";
+    ]}";
 
     # Native niri screenshot shortcuts
     "Mod+Ctrl+S".action.screenshot-window = [];
