@@ -4,7 +4,7 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
 
-    nixpkgs-lib = {
+    viicslen-lib = {
       url = "github:viicslen-nix/lib";
       inputs.nixpkgs.follows = "nixpkgs";
     };
