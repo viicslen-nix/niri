@@ -82,7 +82,7 @@ in {
     }
     (mkIf homeManagerLoaded {
       home-manager.sharedModules = [
-        {_module.args.niriLib = inputs.viicslen-lib.mkDesktopLib {inherit pkgs lib;};}
+        {_module.args.niriLib = inputs.viicslen-lib.lib.mkDesktopLib {inherit pkgs lib;};}
         ./settings.nix
         ./rules.nix
         ./binds
