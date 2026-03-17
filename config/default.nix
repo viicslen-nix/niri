@@ -77,12 +77,15 @@ in {
         enable = true;
         package = pkgs.niri-unstable;
       };
+
+      systemd.user.services.niri-flake-polkit.enable = false;
     }
     (mkIf homeManagerLoaded {
       home-manager.sharedModules = [
-        ./rules.nix
-        ./binds.nix
+        {_module.args.niriLib = inputs.nixpkgs-lib.mkDesktopLib {inherit pkgs lib;};}
         ./settings.nix
+        ./rules.nix
+        ./binds
       ];
     })
   ]);
