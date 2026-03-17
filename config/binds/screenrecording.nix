@@ -7,7 +7,7 @@
   ...
 }: let
   cfg = osConfig.modules.desktop.niri;
-  inherit (niriLib.niri) mkRecordCmd mkMenu;
+  inherit (niriLib) mkRecordCmd mkMenu;
 in {
   programs.niri.settings.binds = with lib;
   with config.lib.niri.actions; let

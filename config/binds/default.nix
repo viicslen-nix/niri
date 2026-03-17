@@ -17,7 +17,7 @@ in {
   with config.lib.niri.actions; let
     sh = spawn "sh" "-c";
 
-    mkMenu = niriLib.niri.mkMenu;
+    mkMenu = niriLib.mkMenu;
 
     terminal =
       if cfg.terminal != null
