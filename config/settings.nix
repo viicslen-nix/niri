@@ -60,7 +60,7 @@ in {
 
     spawn-at-startup = [
       {argv = ["${pkgs.gnome-keyring}/bin/gnome-keyring-daemon" "--start" "--components=secrets"];}
-      {sh = "${passwordManager} --silent";}
+      {sh = "systemctl --user start dms-session.target";}
     ];
   };
 }
