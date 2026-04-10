@@ -35,6 +35,8 @@ in {
         enable = true;
         max-scroll-amount = "0%";
       };
+
+      keyboard.xkb.options = "compose:rwin";
     };
 
     layout = {
