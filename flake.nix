@@ -12,12 +12,6 @@
     niri-flake = {
       url = "github:sodiboo/niri-flake";
       inputs.nixpkgs.follows = "nixpkgs";
-      inputs.niri-unstable.url = "github:niri-wm/niri/5393902dd22e9d540438ee178775f1e488eea724";
-    };
-
-    dms = {
-      url = "github:AvengeMedia/DankMaterialShell";
-      inputs.nixpkgs.follows = "nixpkgs";
     };
   };
 
@@ -25,7 +19,6 @@
     self,
     nixpkgs,
     niri-flake,
-    dms,
     ...
   }: {
     # Main NixOS module output - exposes the niri desktop environment configuration
