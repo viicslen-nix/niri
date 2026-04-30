@@ -1,4 +1,4 @@
-{
+{lib, ...}: {
   programs.niri.settings = {
     window-rules = [
       {
@@ -33,18 +33,28 @@
         matches = [{namespace = "dms:blurwallpaper";}];
         place-within-backdrop = true;
       }
-      # {
-      #   matches = [
-      #     {
-      #       namespace = "^dms:.*";
-      #       at-startup = true;
-      #     }
-      #   ];
-      #   background-effect = {
-      #     xray = true;
-      #     blur = true;
-      #   };
-      # }
+      {
+        _module.freeformType = lib.types.submodule {
+          options.background-effect = lib.mkOption {
+            type = lib.types.submodule {
+              options = {
+                blur = lib.mkOption {type = lib.types.bool;};
+                xray = lib.mkOption {type = lib.types.bool;};
+              };
+            };
+          };
+        };
+        matches = [
+          {
+            namespace = "^dms:.*";
+            at-startup = true;
+          }
+        ];
+        background-effect = {
+          xray = true;
+          blur = true;
+        };
+      }
     ];
   };
 }
