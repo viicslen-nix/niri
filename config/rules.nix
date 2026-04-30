@@ -1,4 +1,27 @@
-{lib, ...}: {
+{
+  lib,
+  config,
+  ...
+}: let
+  # Raw KDL for layer-rules using background-effect, which upstream schema
+  # doesn't support yet (compatibility shim until it lands in niri-flake).
+  backgroundEffectRules = ''
+    layer-rule {
+      match at-startup=true namespace="^dms:.*"
+      background-effect {
+        blur true
+        xray true
+      }
+    }
+    layer-rule {
+      match at-startup=true namespace="^dev.zed.Zed$"
+      background-effect {
+        blur true
+        xray true
+      }
+    }
+  '';
+in {
   programs.niri.settings = {
     window-rules = [
       {
@@ -33,28 +56,13 @@
         matches = [{namespace = "dms:blurwallpaper";}];
         place-within-backdrop = true;
       }
-      {
-        _module.freeformType = lib.types.submodule {
-          options.background-effect = lib.mkOption {
-            type = lib.types.submodule {
-              options = {
-                blur = lib.mkOption {type = lib.types.bool;};
-                xray = lib.mkOption {type = lib.types.bool;};
-              };
-            };
-          };
-        };
-        matches = [
-          {
-            namespace = "^dms:.*";
-            at-startup = true;
-          }
-        ];
-        background-effect = {
-          xray = true;
-          blur = true;
-        };
-      }
     ];
   };
+
+  # Write background-effect rules as a separate KDL file to be included by DMS.
+  # DMS includes files from the niri/dms/ subdirectory.
+  xdg.configFile."niri/dms/background-effect.kdl" = lib.mkIf (config.programs.niri.finalConfig != null) {
+    text = backgroundEffectRules;
+  };
 }
+
