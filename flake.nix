@@ -9,9 +9,17 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    niri-unstable = {
+      url = "github:YaLTeR/niri";
+      flake = false;
+    };
+
     niri-flake = {
       url = "github:sodiboo/niri-flake";
-      inputs.nixpkgs.follows = "nixpkgs";
+      inputs = {
+        nixpkgs.follows = "nixpkgs";
+        niri-unstable.follows = "niri-unstable";
+      };
     };
   };
 
