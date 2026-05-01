@@ -78,6 +78,13 @@ in {
         package = pkgs.niri-unstable;
       };
 
+      environment.systemPackages = with pkgs; [
+        adwaita-icon-theme
+        adwaita-fonts
+        adwaita-qt6
+        adwaita-qt
+      ];
+
       systemd.user.services.niri-flake-polkit.enable = false;
     }
     (mkIf homeManagerLoaded {
