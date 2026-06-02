@@ -24,75 +24,113 @@ in {
       '');
 
     flameshot = pkgs.flameshot.override {enableWlrSupport = true;};
+    grim = lib.getExe pkgs.grim;
+    niriAction = "${lib.getExe pkgs.niri-unstable} msg action";
+    envCmd = "${pkgs.coreutils}/bin/env";
+    sleep = "${pkgs.coreutils}/bin/sleep";
     wlCopy = "${pkgs.wl-clipboard}/bin/wl-copy";
     screenshotFile = "$HOME/Pictures/Screenshots/screenshot-$(date +%Y%m%d-%H%M%S).png";
+
+    mkShotScript = name: body:
+      lib.getExe (pkgs.writeShellScriptBin name ''
+        set -euo pipefail
+        ${body}
+      '');
 
     # One entry per capture scope; each action (save/clip/edit) maps over this list
     screenshotScopes = [
       {
         key = "a";
         desc = "All monitors";
+        preCmd = "${sleep} 0.8";
         grimArgs = "";
         saveCmd = null;
-        flameshotArgs = "full";
+        clipCmd = null;
       }
       {
         key = "m";
         desc = "Single monitor";
-        grimArgs = "-o \"$(niri msg -j outputs | ${lib.getExe pkgs.jq} -r 'first | .name')\"";
-        saveCmd = "niri msg action screenshot-screen";
-        flameshotArgs = "screen";
+        preCmd = "${sleep} 0.8";
+        grimArgs = "";
+        saveCmd = ''${niriAction} screenshot-screen --path "$FILE"'';
+        clipCmd = ''${niriAction} screenshot-screen --write-to-disk false'';
       }
       {
         key = "w";
         desc = "Single window";
-        grimArgs = "-g \"$(niri msg -j focused-window | ${lib.getExe pkgs.jq} -r '\"\\(.geometry.x),\\(.geometry.y) \\(.geometry.width)x\\(.geometry.height)\"')\"";
-        saveCmd = "niri msg action screenshot-window";
-        flameshotArgs = "gui";
+        preCmd = "${sleep} 0.8";
+        grimArgs = "";
+        saveCmd = ''${niriAction} screenshot-window --path "$FILE"'';
+        clipCmd = ''${niriAction} screenshot-window --write-to-disk false'';
       }
       {
         key = "r";
         desc = "Region";
+        preCmd = "";
         grimArgs = "-g \"$(${lib.getExe pkgs.slurp})\"";
         saveCmd = null;
-        flameshotArgs = "gui";
+        clipCmd = null;
       }
     ];
+
+    saveScopeMenu = mkMenu (
+      map (scope: {
+        inherit (scope) key desc;
+        cmd = mkShotScript "niri-shot-save-${scope.key}" ''
+          ${scope.preCmd}
+          FILE=${screenshotFile}
+          mkdir -p "$(dirname "$FILE")"
+          ${
+            if scope.saveCmd != null
+            then scope.saveCmd
+            else ''${grim} ${scope.grimArgs} "$FILE"''
+          }
+          ${wlCopy} < "$FILE"
+        '';
+      })
+      screenshotScopes
+    );
+
+    clipboardScopeMenu = mkMenu (
+      map (scope: {
+        inherit (scope) key desc;
+        cmd = mkShotScript "niri-shot-clip-${scope.key}" ''
+          ${scope.preCmd}
+          ${
+            if scope.clipCmd != null
+            then scope.clipCmd
+            else ''${grim} ${scope.grimArgs} - | ${wlCopy}''
+          }
+        '';
+      })
+      screenshotScopes
+    );
+
+    flameshotGui = mkShotScript "niri-shot-flameshot-gui" ''
+      ${sleep} 0.2
+      exec ${envCmd} \
+        XDG_CURRENT_DESKTOP=sway \
+        XDG_SESSION_DESKTOP=sway \
+        QT_QPA_PLATFORM=wayland \
+        ${lib.getExe flameshot} gui
+    '';
   in {
     # Action first, then capture scope
     "Mod+Shift+S".action = sh "${mkMenu [
       {
         key = "s";
-        desc = "Save & copy to clipboard";
-        submenu =
-          map (scope: {
-            inherit (scope) key desc;
-            cmd =
-              if scope.saveCmd != null
-              then scope.saveCmd
-              else "FILE=${screenshotFile}; grim ${scope.grimArgs} \"$FILE\" && ${wlCopy} < \"$FILE\"";
-          })
-          screenshotScopes;
+        desc = "Save and copy to clipboard";
+        cmd = saveScopeMenu;
       }
       {
         key = "c";
         desc = "Clipboard only";
-        submenu =
-          map (scope: {
-            inherit (scope) key desc;
-            cmd = "grim ${scope.grimArgs} - | ${wlCopy}";
-          })
-          screenshotScopes;
+        cmd = clipboardScopeMenu;
       }
       {
         key = "f";
         desc = "Open with Flameshot";
-        submenu =
-          map (scope: {
-            inherit (scope) key desc;
-            cmd = "${lib.getExe flameshot} ${scope.flameshotArgs}";
-          })
-          screenshotScopes;
+        cmd = flameshotGui;
       }
     ]}";
 

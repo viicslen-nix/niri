@@ -1,19 +1,8 @@
 {
   lib,
   pkgs,
-  config,
-  osConfig,
   ...
-}: let
-  cfg = osConfig.modules.desktop.niri;
-
-  passwordManager =
-    if cfg.passwordManager != null
-    then (lib.getExe cfg.passwordManager)
-    else if (config.modules.functionality.defaults.passwordManager or null) != null
-    then (lib.getExe config.modules.functionality.defaults.passwordManager)
-    else null;
-in {
+}: {
   programs.niri.settings = {
     prefer-no-csd = true;
     hotkey-overlay.skip-at-startup = true;

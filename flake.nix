@@ -26,7 +26,6 @@
   outputs = inputs @ {
     self,
     nixpkgs,
-    niri-flake,
     ...
   }: {
     # Main NixOS module output - exposes the niri desktop environment configuration
@@ -48,7 +47,7 @@
     checks.x86_64-linux.default = let
       user = "test";
       stateVersion = "25.11";
-      home-manager = builtins.fetchTarball {
+      home-manager = fetchTarball {
         url = "https://github.com/nix-community/home-manager/archive/release-${stateVersion}.tar.gz";
         sha256 = "sha256:14myi8v2gclsczqri3wvqz0djg48w6h9x6z183xgcinc31qv4mh7";
       };

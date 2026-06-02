@@ -1,12 +1,10 @@
 {
-  osConfig,
   config,
   pkgs,
   lib,
   niriLib,
   ...
 }: let
-  cfg = osConfig.modules.desktop.niri;
   inherit (niriLib) mkRecordCmd mkMenu;
 in {
   programs.niri.settings.binds = with lib;

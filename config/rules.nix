@@ -1,8 +1,4 @@
 {
-  lib,
-  config,
-  ...
-}: {
   programs.niri.settings = {
     window-rules = [
       {

@@ -1,7 +1,6 @@
 {
   osConfig,
   config,
-  pkgs,
   lib,
   niriLib,
   ...
@@ -73,7 +72,7 @@ in {
           ws = let
             c = (x + 1) / 10;
           in
-            builtins.toString (x + 1 - (c * 10));
+            toString (x + 1 - (c * 10));
           workspace = x + 1;
         in [
           {
@@ -206,6 +205,8 @@ in {
       "Mod+Ctrl+L".action = focus-workspace-up;
       "Mod+Down".action = focus-workspace-down;
       "Mod+Up".action = focus-workspace-up;
+      "Mod+Left".action = focus-column-left;
+      "Mod+Right".action = focus-column-right;
 
       # Monitor focus
       "Mod+Shift+H".action = focus-monitor-left;
@@ -255,34 +256,9 @@ in {
           cmd = "ferdium";
         }
         {
-          key = "p";
-          desc = "PhpStorm";
-          cmd = "phpstorm";
-        }
-        {
-          key = "d";
-          desc = "DataGrip";
-          cmd = "datagrip";
-        }
-        {
-          key = "w";
-          desc = "WebStorm";
-          cmd = "webstorm";
-        }
-        {
           key = "l";
           desc = "Discord";
           cmd = "legcord";
-        }
-        {
-          key = "f";
-          desc = "Firefox";
-          cmd = "firefox";
-        }
-        {
-          key = "c";
-          desc = "VSCode";
-          cmd = "code";
         }
         {
           key = "e";
@@ -293,6 +269,21 @@ in {
           key = "t";
           desc = "Terminal";
           cmd = "${terminal}";
+        }
+        {
+          key = "b";
+          desc = "Browser";
+          cmd = "${browser}";
+        }
+        {
+          key = "p";
+          desc = "Password Manager";
+          cmd = "${passwordManager}";
+        }
+        {
+          key = "n";
+          desc = "Editor";
+          cmd = "${editor}";
         }
       ]}";
     };
