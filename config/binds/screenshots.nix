@@ -109,6 +109,7 @@ in {
     flameshotGui = mkShotScript "niri-shot-flameshot-gui" ''
       ${sleep} 0.2
       exec ${envCmd} \
+        DISPLAY= \
         XDG_CURRENT_DESKTOP=sway \
         XDG_SESSION_DESKTOP=sway \
         QT_QPA_PLATFORM=wayland \
