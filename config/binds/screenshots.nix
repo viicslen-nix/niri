@@ -115,6 +115,21 @@ in {
         QT_QPA_PLATFORM=wayland \
         ${lib.getExe flameshot} gui
     '';
+
+    # Native wlroots flow: grab the whole focused monitor, then crop/annotate
+    # live in satty (region stays adjustable while editing, unlike slurp first).
+    sattyEdit = mkShotScript "niri-shot-satty" ''
+      FILE=${screenshotFile}
+      mkdir -p "$(dirname "$FILE")"
+      OUTPUT=$(${lib.getExe pkgs.niri-unstable} msg -j focused-output \
+        | ${lib.getExe pkgs.jq} -r '.name')
+      ${grim} -o "$OUTPUT" - \
+        | ${lib.getExe pkgs.satty} --filename - \
+            --fullscreen \
+            --initial-tool crop \
+            --copy-command ${wlCopy} \
+            --output-filename "$FILE"
+    '';
   in {
     # Action first, then capture scope
     "Mod+Shift+S".action = sh "${mkMenu [
@@ -132,6 +147,11 @@ in {
         key = "f";
         desc = "Open with Flameshot";
         cmd = flameshotGui;
+      }
+      {
+        key = "e";
+        desc = "Capture and crop with Satty";
+        cmd = sattyEdit;
       }
     ]}";
 
