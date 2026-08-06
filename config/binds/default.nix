@@ -248,6 +248,10 @@ in {
       # "Mod+PageDown".action = sh "${pkgs.pipewire}/bin/wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-";
       # "Mod+M".action = sh "${pkgs.pipewire}/bin/wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle";
 
+      "Mod+M".action = spawn "niri-scratchpad create 1";
+      "Mod+Ctrl+M".action = spawn "niri-scratchpad delete 1";
+      "Mod+Shift+M".action = spawn "niri-scratchpad create 1 --as-float";
+
       # Application launcher menu
       "Mod+A".action = sh "${mkMenu [
         {

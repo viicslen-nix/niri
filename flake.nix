@@ -21,6 +21,11 @@
         niri-unstable.follows = "niri-unstable";
       };
     };
+
+    niri-scratchpad = {
+      url = "github:argosnothing/niri-scratchpad";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs = inputs @ {

@@ -9,6 +9,8 @@
     screenshot-path = "~/Pictures/Screenshots/%Y-%m-%dT%H%M%S.png";
     xwayland-satellite.path = "${lib.getExe pkgs.xwayland-satellite}";
 
+    workspaces.statch.name = "Scratchpad";
+
     cursor = {
       hide-when-typing = true;
       hide-after-inactive-ms = 2000;

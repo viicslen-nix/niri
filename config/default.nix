@@ -83,6 +83,7 @@ in {
         adwaita-fonts
         adwaita-qt6
         adwaita-qt
+        inputs.niri-scratchpad.packages.${pkgs.system}.default
       ];
 
       systemd.user.services.niri-flake-polkit.enable = false;
