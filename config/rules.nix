@@ -27,16 +27,12 @@
         };
       }
       {
-        # Flameshot's capture overlay is a normal toplevel with an empty
-        # app-id, so match on its title. Let it float fullscreen instead of
-        # becoming a tile in the workspace.
+        # Match the title, not app-id: flameshot's capture overlay has an empty app-id.
         matches = [{title = "^flameshot$";}];
         open-floating = true;
         open-fullscreen = true;
       }
       {
-        # Same treatment for satty's editor: float fullscreen so it overlays
-        # instead of pushing the tiled layout around.
         matches = [{app-id = "^com\\.gabm\\.satty$";}];
         open-floating = true;
         open-fullscreen = true;

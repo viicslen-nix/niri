@@ -2,10 +2,24 @@
   osConfig,
   config,
   lib,
+  pkgs,
   niriLib,
   ...
 }: let
   cfg = osConfig.modules.desktop.niri;
+
+  app = name:
+    lib.mapNullable lib.getExe (
+      if cfg.${name} != null
+      then cfg.${name}
+      else config.modules.functionality.defaults.${name} or null
+    );
+
+  terminal = app "terminal";
+  browser = app "browser";
+  editor = app "editor";
+  fileManager = app "fileManager";
+  passwordManager = lib.mapNullable (exe: "${exe} --quick-access") (app "passwordManager");
 in {
   imports = [
     ./screenshots.nix
@@ -17,41 +31,7 @@ in {
     sh = spawn "sh" "-c";
 
     mkMenu = niriLib.mkMenu;
-
-    terminal =
-      if cfg.terminal != null
-      then getExe cfg.terminal
-      else if (config.modules.functionality.defaults.terminal or null) != null
-      then getExe config.modules.functionality.defaults.terminal
-      else null;
-
-    browser =
-      if cfg.browser != null
-      then getExe cfg.browser
-      else if (config.modules.functionality.defaults.browser or null) != null
-      then getExe config.modules.functionality.defaults.browser
-      else null;
-
-    editor =
-      if cfg.editor != null
-      then getExe cfg.editor
-      else if (config.modules.functionality.defaults.editor or null) != null
-      then getExe config.modules.functionality.defaults.editor
-      else null;
-
-    fileManager =
-      if cfg.fileManager != null
-      then getExe cfg.fileManager
-      else if (config.modules.functionality.defaults.fileManager or null) != null
-      then getExe config.modules.functionality.defaults.fileManager
-      else null;
-
-    passwordManager =
-      if cfg.passwordManager != null
-      then "${getExe cfg.passwordManager} --quick-access"
-      else if (config.modules.functionality.defaults.passwordManager or null) != null
-      then "${getExe config.modules.functionality.defaults.passwordManager} --quick-access"
-      else null;
+    playerctl = getExe pkgs.playerctl;
 
     appBinds =
       lib.optionalAttrs (terminal != null) {
@@ -222,10 +202,6 @@ in {
       "Mod+Shift+Alt+Left".action = move-workspace-to-monitor-left;
       "Mod+Shift+Alt+Right".action = move-workspace-to-monitor-right;
 
-      # Interactive column resizing
-      # "Mod+BracketLeft".action.resize-column-width-left = [];
-      # "Mod+BracketRight".action.resize-column-width-right = [];
-
       # Dynamic cast
       "Mod+Insert".action = set-dynamic-cast-window;
       "Mod+Shift+Insert".action = set-dynamic-cast-monitor;
@@ -239,56 +215,54 @@ in {
       "Mod+Shift+Tab".action = focus-window-up-or-column-left;
 
       # Media controls
-      "XF86AudioPlay".action = sh "playerctl play-pause";
-      "XF86AudioPrev".action = sh "playerctl previous";
-      "XF86AudioNext".action = sh "playerctl next";
+      "XF86AudioPlay".action = spawn playerctl "play-pause";
+      "XF86AudioPrev".action = spawn playerctl "previous";
+      "XF86AudioNext".action = spawn playerctl "next";
 
-      # Volume controls
-      # "Mod+PageUp".action = sh "${pkgs.pipewire}/bin/wpctl set-volume -l '1.0' @DEFAULT_AUDIO_SINK@ 5%+";
-      # "Mod+PageDown".action = sh "${pkgs.pipewire}/bin/wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-";
-      # "Mod+M".action = sh "${pkgs.pipewire}/bin/wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle";
-
-      "Mod+M".action = spawn "niri-scratchpad create 1";
-      "Mod+Ctrl+M".action = spawn "niri-scratchpad delete 1";
-      "Mod+Shift+M".action = spawn "niri-scratchpad create 1 --as-float";
+      # Not Mod+M: DMS's included binds.kdl loads after hm.kdl and takes it.
+      "Mod+X".action = spawn "niri-scratchpad" "create" "1";
+      "Mod+Shift+X".action = spawn "niri-scratchpad" "create" "1" "--as-float";
+      "Mod+Ctrl+X".action = spawn "niri-scratchpad" "delete" "1";
 
       # Application launcher menu
-      "Mod+A".action = sh "${mkMenu [
-        {
-          key = "s";
-          desc = "Ferdium";
-          cmd = "ferdium";
-        }
-        {
-          key = "l";
-          desc = "Discord";
-          cmd = "legcord";
-        }
-        {
-          key = "e";
-          desc = "File Manager";
-          cmd = "${fileManager}";
-        }
-        {
-          key = "t";
-          desc = "Terminal";
-          cmd = "${terminal}";
-        }
-        {
-          key = "b";
-          desc = "Browser";
-          cmd = "${browser}";
-        }
-        {
-          key = "p";
-          desc = "Password Manager";
-          cmd = "${passwordManager}";
-        }
-        {
-          key = "n";
-          desc = "Editor";
-          cmd = "${editor}";
-        }
-      ]}";
+      "Mod+A".action = sh "${mkMenu ([
+          {
+            key = "s";
+            desc = "Ferdium";
+            cmd = "ferdium";
+          }
+          {
+            key = "l";
+            desc = "Discord";
+            cmd = "legcord";
+          }
+        ]
+        ++ lib.filter (entry: entry.cmd != null) [
+          {
+            key = "e";
+            desc = "File Manager";
+            cmd = fileManager;
+          }
+          {
+            key = "t";
+            desc = "Terminal";
+            cmd = terminal;
+          }
+          {
+            key = "b";
+            desc = "Browser";
+            cmd = browser;
+          }
+          {
+            key = "p";
+            desc = "Password Manager";
+            cmd = passwordManager;
+          }
+          {
+            key = "n";
+            desc = "Editor";
+            cmd = editor;
+          }
+        ])}";
     };
 }

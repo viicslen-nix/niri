@@ -3,29 +3,18 @@
   config,
   pkgs,
   lib,
+  niriLib,
   ...
-}: let
-  cfg = osConfig.modules.desktop.niri;
-in {
+}: {
   programs.niri.settings.binds = with lib;
   with config.lib.niri.actions; let
     sh = spawn "sh" "-c";
 
-    mkMenu = menu: let
-      configFile =
-        pkgs.writeText "config.yaml"
-        (lib.generators.toYAML {} {
-          anchor = "bottom-right";
-          inherit menu;
-        });
-    in
-      lib.getExe (pkgs.writeShellScriptBin "niri-menu" ''
-        exec ${lib.getExe pkgs.wlr-which-key} ${configFile}
-      '');
+    inherit (niriLib) mkMenu;
 
-    flameshot = pkgs.flameshot.override {enableWlrSupport = true;};
+    niri = lib.getExe osConfig.programs.niri.package;
     grim = lib.getExe pkgs.grim;
-    niriAction = "${lib.getExe pkgs.niri-unstable} msg action";
+    niriAction = "${niri} msg action";
     envCmd = "${pkgs.coreutils}/bin/env";
     sleep = "${pkgs.coreutils}/bin/sleep";
     wlCopy = "${pkgs.wl-clipboard}/bin/wl-copy";
@@ -37,7 +26,6 @@ in {
         ${body}
       '');
 
-    # One entry per capture scope; each action (save/clip/edit) maps over this list
     screenshotScopes = [
       {
         key = "a";
@@ -83,9 +71,11 @@ in {
           ${
             if scope.saveCmd != null
             then scope.saveCmd
-            else ''${grim} ${scope.grimArgs} "$FILE"''
+            else ''
+              ${grim} ${scope.grimArgs} "$FILE"
+              ${wlCopy} < "$FILE"
+            ''
           }
-          ${wlCopy} < "$FILE"
         '';
       })
       screenshotScopes
@@ -113,15 +103,13 @@ in {
         XDG_CURRENT_DESKTOP=sway \
         XDG_SESSION_DESKTOP=sway \
         QT_QPA_PLATFORM=wayland \
-        ${lib.getExe flameshot} gui
+        ${lib.getExe pkgs.flameshot} gui
     '';
 
-    # Native wlroots flow: grab the whole focused monitor, then crop/annotate
-    # live in satty (region stays adjustable while editing, unlike slurp first).
     sattyEdit = mkShotScript "niri-shot-satty" ''
       FILE=${screenshotFile}
       mkdir -p "$(dirname "$FILE")"
-      OUTPUT=$(${lib.getExe pkgs.niri-unstable} msg -j focused-output \
+      OUTPUT=$(${niri} msg -j focused-output \
         | ${lib.getExe pkgs.jq} -r '.name')
       ${grim} -o "$OUTPUT" - \
         | ${lib.getExe pkgs.satty} --filename - \
@@ -131,7 +119,6 @@ in {
             --output-filename "$FILE"
     '';
   in {
-    # Action first, then capture scope
     "Mod+Shift+S".action = sh "${mkMenu [
       {
         key = "s";
@@ -155,7 +142,6 @@ in {
       }
     ]}";
 
-    # Native niri screenshot shortcuts
     "Mod+Ctrl+S".action.screenshot-window = [];
     "Mod+Ctrl+Shift+S".action.screenshot-screen = [];
   };

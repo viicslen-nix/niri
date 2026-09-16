@@ -48,13 +48,13 @@
     # Alias for clarity
     nixosModules.niri = self.nixosModules.default;
 
-    # Checks for the module
     checks.x86_64-linux.default = let
       user = "test";
-      stateVersion = "25.11";
+      stateVersion = "26.05";
+      # Pin a commit, not a branch: a branch tarball's sha256 goes stale on the next push.
       home-manager = fetchTarball {
-        url = "https://github.com/nix-community/home-manager/archive/release-${stateVersion}.tar.gz";
-        sha256 = "sha256:14myi8v2gclsczqri3wvqz0djg48w6h9x6z183xgcinc31qv4mh7";
+        url = "https://github.com/nix-community/home-manager/archive/2c0350c759688177331b8f5242311fae8877bdb3.tar.gz";
+        sha256 = "sha256:14lbbilvbjhq7bqbjgvm9mvx0ci2sgg3km8whkpncrwygmvhkp5z";
       };
       testConfig = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
@@ -63,11 +63,16 @@
           (import "${home-manager}/nixos")
           ({pkgs, ...}: {
             system.stateVersion = stateVersion;
-            fileSystems."/".device = "/dev/null";
+            fileSystems."/" = {
+              device = "/dev/null";
+              fsType = "ext4";
+            };
             boot.loader = {
               grub.enable = false;
               generic-extlinux-compatible.enable = true;
             };
+
+            home-manager.useGlobalPkgs = true;
 
             users.users.${user}.isNormalUser = true;
             home-manager.users.${user}.home.stateVersion = stateVersion;
@@ -84,6 +89,8 @@
         ];
       };
     in
-      testConfig.config.system.build.toplevel;
+      # Keep unsafeDiscardOutputDependency: a bare drvPath's deep context makes the check build the whole system.
+      nixpkgs.legacyPackages.x86_64-linux.writeText "niri-module-eval"
+      (builtins.unsafeDiscardOutputDependency testConfig.config.system.build.toplevel.drvPath);
   };
 }

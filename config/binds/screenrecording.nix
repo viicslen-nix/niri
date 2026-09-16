@@ -1,4 +1,5 @@
 {
+  osConfig,
   config,
   pkgs,
   lib,
@@ -6,6 +7,9 @@
   ...
 }: let
   inherit (niriLib) mkRecordCmd mkMenu;
+
+  niri = lib.getExe osConfig.programs.niri.package;
+  jq = lib.getExe pkgs.jq;
 in {
   programs.niri.settings.binds = with lib;
   with config.lib.niri.actions; let
@@ -15,27 +19,23 @@ in {
       {
         key = "q";
         desc = "Stop recording";
-        cmd = "pkill -INT wl-screenrec";
+        cmd = "${getExe' pkgs.procps "pkill"} -INT wl-screenrec";
       }
       {
+        # Keep -o: with no -o/-g, wl-screenrec bails on multi-monitor setups.
         key = "a";
-        desc = "All monitors";
-        cmd = mkRecordCmd "";
+        desc = "Focused monitor";
+        cmd = mkRecordCmd ''-o "$(${niri} msg -j focused-output | ${jq} -r .name)"'';
       }
       {
         key = "m";
         desc = "Single monitor";
-        cmd = mkRecordCmd "-o $(niri msg -j outputs | ${lib.getExe pkgs.jq} -r '.[].name' | ${lib.getExe pkgs.wofi} --dmenu)";
-      }
-      {
-        key = "w";
-        desc = "Single window";
-        cmd = mkRecordCmd "-g \"$(niri msg -j focused-window | ${lib.getExe pkgs.jq} -r '\"\\(.geometry.x),\\(.geometry.y) \\(.geometry.width)x\\(.geometry.height)\"')\"";
+        cmd = mkRecordCmd ''-o "$(${niri} msg -j outputs | ${jq} -r '.[] | select(.logical != null) | .name' | ${getExe pkgs.wofi} --dmenu)"'';
       }
       {
         key = "r";
         desc = "Region";
-        cmd = mkRecordCmd "-g \"$(${lib.getExe pkgs.slurp})\"";
+        cmd = mkRecordCmd ''-g "$(${getExe pkgs.slurp})"'';
       }
     ]}";
   };

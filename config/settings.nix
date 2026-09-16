@@ -9,7 +9,8 @@
     screenshot-path = "~/Pictures/Screenshots/%Y-%m-%dT%H%M%S.png";
     xwayland-satellite.path = "${lib.getExe pkgs.xwayland-satellite}";
 
-    workspaces.statch.name = "Scratchpad";
+    # niri-scratchpad hardcodes this workspace name; don't rename it.
+    workspaces.stash = {};
 
     cursor = {
       hide-when-typing = true;

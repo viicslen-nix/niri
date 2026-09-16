@@ -15,7 +15,7 @@ with lib; let
   homeManagerLoaded = builtins.hasAttr "home-manager" options;
 in {
   options.modules.${namespace}.${name} = {
-    enable = mkEnableOption (mdDoc "niri");
+    enable = mkEnableOption "niri";
 
     terminal = mkOption {
       type = types.nullOr types.package;
@@ -88,20 +88,16 @@ in {
 
       systemd.user.services.niri-flake-polkit.enable = false;
 
-      # niri's gnome-portal screenshot path asserts a single output and errors
-      # on multi-monitor (niri-wm/niri#117), so Flameshot 14 (which dropped grim
-      # and now captures via org.freedesktop.portal.Screenshot) gets nothing.
-      # Route just the Screenshot impl to the grim-based wlr backend, which
-      # handles multiple outputs; ScreenCast stays on gnome via the default.
       xdg.portal = {
         extraPortals = [pkgs.xdg-desktop-portal-wlr];
         config.niri = {
           default = ["gnome" "gtk"];
+          # Don't route Screenshot back to gnome: it fails on multi-monitor.
           "org.freedesktop.impl.portal.Screenshot" = "wlr";
         };
       };
     }
-    (mkIf homeManagerLoaded {
+    (optionalAttrs homeManagerLoaded {
       home-manager.sharedModules = [
         {_module.args.niriLib = inputs.viicslen-lib.lib.wayland {inherit pkgs lib;};}
         ./settings.nix
