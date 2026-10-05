@@ -30,7 +30,7 @@ in {
   with config.lib.niri.actions; let
     sh = spawn "sh" "-c";
 
-    mkMenu = niriLib.mkMenu;
+    inherit (niriLib) mkMenu;
     playerctl = getExe pkgs.playerctl;
 
     appBinds =
