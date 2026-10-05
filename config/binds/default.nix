@@ -82,11 +82,13 @@ in {
       "Mod+Ctrl+F".action.toggle-windowed-fullscreen = [];
       "Mod+Alt+F".action.maximize-window-to-edges = [];
 
-      # Window focus movement (vim keys)
+      # Window focus movement
       "Mod+H".action = focus-column-left;
       "Mod+L".action = focus-column-right;
       "Mod+K".action = focus-window-up;
       "Mod+J".action = focus-window-down;
+      "Mod+Left".action = focus-column-left;
+      "Mod+Right".action = focus-column-right;
 
       # Window focus menu
       "Mod+W".action = sh "${mkMenu [
@@ -185,8 +187,6 @@ in {
       "Mod+Ctrl+L".action = focus-workspace-up;
       "Mod+Down".action = focus-workspace-down;
       "Mod+Up".action = focus-workspace-up;
-      "Mod+Left".action = focus-column-left;
-      "Mod+Right".action = focus-column-right;
 
       # Monitor focus
       "Mod+Shift+H".action = focus-monitor-left;
@@ -233,7 +233,7 @@ in {
           }
           {
             key = "l";
-            desc = "Discord";
+            desc = "Legcord";
             cmd = "legcord";
           }
         ]
