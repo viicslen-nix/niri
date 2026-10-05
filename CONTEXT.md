@@ -15,6 +15,15 @@ from `Mod+M` to `Mod+X` / `Mod+Shift+X` / `Mod+Ctrl+X`, the same keys the
 Hyprland flake uses for minimize. Check `~/.config/niri/dms/binds.kdl` before
 picking a new key.
 
+## The libdisplay-info 0.2 shim
+
+nixpkgs dropped `libdisplay-info_0_2` on 2026-08-04 ("unused"), but niri-flake
+still builds niri against 0.2 and asserts the version, so `pkgs.niri-unstable`
+stops evaluating without it. The module's overlay rebuilds 0.2.0 from the 0.3
+expression. It lived in the consuming repo's overlays until this flake's own
+module check failed without it; here it travels with the only package that
+needs it. Drop it once niri-flake moves to `libdisplay-info_0_3`.
+
 ## Scratchpads
 
 niri-scratchpad moves stashed windows to a workspace it finds by the hardcoded
