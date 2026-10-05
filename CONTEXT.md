@@ -83,3 +83,7 @@ The check evaluates the module but never builds it: it writes the toplevel's
 path from pulling in the whole system build. home-manager is pinned to a
 commit because a branch tarball's sha256 changes on the next push.
 `useGlobalPkgs` matches the hosts.
+
+`nix fmt` runs treefmt, whose statix step is `statix fix`. That silently skips
+lints it cannot fix, repeated keys (W20) among them, so `checks.<system>.statix`
+runs `statix check` on its own to fail on those.

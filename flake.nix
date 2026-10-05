@@ -26,29 +26,26 @@
       url = "github:argosnothing/niri-scratchpad";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    treefmt-nix = {
+      url = "github:numtide/treefmt-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs = inputs @ {
     self,
     nixpkgs,
+    treefmt-nix,
     ...
-  }: {
-    # Main NixOS module output - exposes the niri desktop environment configuration
-    nixosModules.default = {
-      config,
-      lib,
-      pkgs,
-      options,
-      ...
-    }:
-      import ./config {
-        inherit config lib pkgs options inputs;
-      };
+  }: let
+    forAllSystems = nixpkgs.lib.genAttrs ["x86_64-linux" "aarch64-linux"];
 
-    # Alias for clarity
-    nixosModules.niri = self.nixosModules.default;
+    treefmtEval =
+      forAllSystems (system:
+        treefmt-nix.lib.evalModule nixpkgs.legacyPackages.${system} ./treefmt.nix);
 
-    checks.x86_64-linux.default = let
+    moduleCheck = let
       user = "test";
       stateVersion = "26.05";
       # Pin a commit, not a branch: a branch tarball's sha256 goes stale on the next push.
@@ -92,5 +89,34 @@
       # Keep unsafeDiscardOutputDependency: a bare drvPath's deep context makes the check build the whole system.
       nixpkgs.legacyPackages.x86_64-linux.writeText "niri-module-eval"
       (builtins.unsafeDiscardOutputDependency testConfig.config.system.build.toplevel.drvPath);
+  in {
+    formatter = forAllSystems (system: treefmtEval.${system}.config.build.wrapper);
+
+    # Main NixOS module output - exposes the niri desktop environment configuration
+    nixosModules.default = {
+      config,
+      lib,
+      pkgs,
+      options,
+      ...
+    }:
+      import ./config {
+        inherit config lib pkgs options inputs;
+      };
+
+    # Alias for clarity
+    nixosModules.niri = self.nixosModules.default;
+
+    checks = forAllSystems (system: let
+      pkgs = nixpkgs.legacyPackages.${system};
+    in
+      {
+        treefmt = treefmtEval.${system}.config.build.check self;
+        # treefmt runs `statix fix`, which skips lints it cannot fix (W20).
+        statix = pkgs.runCommandLocal "statix-check" {} ''
+          ${pkgs.lib.getExe pkgs.statix} check ${./.} && touch $out
+        '';
+      }
+      // nixpkgs.lib.optionalAttrs (system == "x86_64-linux") {default = moduleCheck;});
   };
 }
