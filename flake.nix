@@ -22,9 +22,18 @@
       };
     };
 
+    rust-overlay = {
+      url = "github:oxalica/rust-overlay";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     niri-scratchpad = {
       url = "github:argosnothing/niri-scratchpad";
-      inputs.nixpkgs.follows = "nixpkgs";
+      inputs = {
+        nixpkgs.follows = "nixpkgs";
+        # Don't drop: upstream's own rust-overlay pin emits stdenv.isLinux/isDarwin warnings.
+        rust-overlay.follows = "rust-overlay";
+      };
     };
 
     treefmt-nix = {

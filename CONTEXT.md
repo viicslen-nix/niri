@@ -96,3 +96,10 @@ commit because a branch tarball's sha256 changes on the next push.
 `nix fmt` runs treefmt, whose statix step is `statix fix`. That silently skips
 lints it cannot fix, repeated keys (W20) among them, so `checks.<system>.statix`
 runs `statix check` on its own to fail on those.
+
+## niri-scratchpad follows our rust-overlay
+
+niri-scratchpad's lock pins rust-overlay `0760133`, whose `lib/mk-aggregated.nix`
+still reads `stdenv.isLinux` / `stdenv.isDarwin`; nixpkgs warns on both at every
+host eval. Following a current rust-overlay clears them. Dropping the `follows`
+brings the warnings back until upstream bumps its lock.
